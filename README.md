@@ -4,9 +4,11 @@ Select an English word on any page to see up to 5 definitions. Right-click a sel
 
 Definitions: https://freedictionaryapi.com (Wiktionary, CC BY-SA 4.0).
 
-## Load it
-- Chrome: `chrome://extensions` -> Developer mode -> Load unpacked -> this folder.
-- Firefox: `about:debugging` -> This Firefox -> Load Temporary Add-on -> `manifest.json`.
+## Build and load it
+`npm run build` writes browser-specific packages to `dist/`. Chrome (MV3) rejects `background.scripts` and Firefox ignores `background.service_worker`, so `manifest.json` in the repo is the Chrome form and the build derives the Firefox one.
+- Chrome: `chrome://extensions` -> Developer mode -> Load unpacked -> `dist/chrome` (or this folder, for development). `dist/dictionary-lookup-<version>-chrome.zip` is the Web Store upload; Chrome cannot load a zip directly, unzip it first.
+- Firefox 127+: `about:debugging` -> This Firefox -> Load Temporary Add-on -> `dist/dictionary-lookup-<version>-firefox.xpi` (or `dist/firefox/manifest.json`). Do not load the repo's root `manifest.json` in Firefox. Permanent installs need the add-on signed on addons.mozilla.org.
+- Firefox only: open `about:addons` -> the extension -> Permissions and allow access to all websites.
 
 ## Privacy and security
 - Only a single word you select with the mouse is sent, to `dictionary.apiUrlTemplate` (default freedictionaryapi.com), with no cookies and no referrer. Text selected inside inputs, textareas and editors is never sent. Phrases are never sent anywhere automatically; the right-click search only opens a page when you pick it.

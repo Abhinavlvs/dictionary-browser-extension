@@ -12,6 +12,8 @@ Definitions: https://freedictionaryapi.com (Wiktionary, CC BY-SA 4.0).
 
 ![Dictionary Lookup showing the definitions of a selected word on a Wikipedia article](docs/images/screenshot-popup.png)
 
+<sub>Screenshot of the Wikipedia article ["Novel"](https://en.wikipedia.org/wiki/Novel), text available under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).</sub>
+
 **Or right-click a word or phrase to search Merriam-Webster:**
 
 <img src="docs/images/screenshot-context-menu.png" alt="Right-click menu showing the Search in Merriam-Webster item" width="420">

@@ -17,6 +17,7 @@
   configureCard({ width: popup.width, theme: popup.theme, showAttribution: popup.showAttribution });
 
   let currentWord = null;
+  let lookupSeq = 0; // distinguishes two lookups of the *same* word started at different places
   let pointerInCard = false; // true while a click that started inside the card is in progress
 
   function dismiss() {
@@ -50,14 +51,18 @@
     if (!word) return dismiss();
     const rect = sel.getRangeAt(0).getBoundingClientRect();
     currentWord = word;
+    const seq = ++lookupSeq;
     showCard(rect, { state: "loading" });
     let result;
     try {
       result = await api.runtime.sendMessage({ type: "lookup", word });
     } catch (e) {
+      // After an extension update/reload this page's content script is orphaned: stay quiet, a page
+      // refresh fixes it, and "check your connection" would be misleading.
+      if (!api.runtime || !api.runtime.id) return dismiss();
       result = { ok: false, error: String(e) };
     }
-    if (currentWord !== word) return; // selection changed or card dismissed meanwhile
+    if (seq !== lookupSeq || currentWord !== word) return; // selection changed or card dismissed meanwhile
     showCard(rect, cardModel(result, {
       limit: popup.maxDefinitions,
       showExamples: popup.showExamples,

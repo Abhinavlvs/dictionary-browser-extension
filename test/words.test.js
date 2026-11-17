@@ -35,3 +35,19 @@ test("isEditable detects form fields and contenteditable", () => {
   assert.strictEqual(isEditable({ tagName: "P", isContentEditable: false }), false);
   assert.strictEqual(isEditable(null), false);
 });
+
+test("normalizeWord strips surrounding quotes and brackets", () => {
+  for (const [input, want] of [["“hello”", "hello"], ["(hello)", "hello"], ["\"hello\"", "hello"], ["‘hello’", "hello"], ["[hello],", "hello"], ["hello…", "hello"], ["dogs'", "dogs"]]) {
+    assert.strictEqual(normalizeWord(input), want, input);
+  }
+  assert.strictEqual(normalizeWord("“two words”"), null);
+  assert.strictEqual(normalizeWord("“”"), null);
+});
+
+test("normalizeWord accepts accented and non-ASCII letters", () => {
+  assert.strictEqual(normalizeWord("café"), "café");
+  assert.strictEqual(normalizeWord("Naïve"), "naïve");
+  assert.strictEqual(normalizeWord("façade"), "façade");
+  assert.strictEqual(normalizeWord("café2"), null);
+  assert.strictEqual(normalizeWord("a_b"), null);
+});

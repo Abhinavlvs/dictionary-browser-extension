@@ -1,9 +1,10 @@
 if (typeof importScripts === "function") {
-  importScripts("lib/parse.js", "lib/words.js", "lib/config.js", "lib/sites.js", "lib/lookup.js");
+  importScripts("lib/parse.js", "lib/words.js", "lib/config.js", "lib/sites.js", "lib/serial.js", "lib/lookup.js");
 }
 
 const api = globalThis.browser ?? globalThis.chrome;
 const MENU_ID = "mw-search";
+const runExclusive = DictExt.createSerialQueue(); // serialises storage read-modify-write
 const OVERRIDES_KEY = "siteOverrides"; // { host: boolean } set by the toolbar toggle
 
 // Load config.json once per background start; fall back to defaults on any error.
@@ -71,8 +72,11 @@ api.action.onClicked.addListener(async (tab) => {
   }
   if (!host) return;
   const cfg = await configPromise;
-  const next = DictExt.toggleOverrides(host, cfg.popup.disabledHosts, await getOverrides());
-  await api.storage.local.set({ [OVERRIDES_KEY]: next });
+  // Two quick clicks must not both read the same old value and lose one update.
+  await runExclusive(async () => {
+    const next = DictExt.toggleOverrides(host, cfg.popup.disabledHosts, await getOverrides());
+    await api.storage.local.set({ [OVERRIDES_KEY]: next });
+  });
 });
 
 async function handleLookup(rawWord) {

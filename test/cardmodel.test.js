@@ -32,3 +32,7 @@ test("unknown word -> notfound", () => {
 test("failure -> error", () => {
   assert.strictEqual(cardModel({ ok: false, error: "x" }).state, "error");
 });
+
+test("showPronunciation false hides ipa", () => {
+  assert.strictEqual(cardModel(ok(hello), { showPronunciation: false }).ipa, null);
+});

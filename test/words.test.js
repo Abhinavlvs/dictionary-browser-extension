@@ -22,3 +22,8 @@ test("isPrimaryClick only accepts the left button", () => {
   assert.strictEqual(isPrimaryClick({ button: 2 }), false);
   assert.strictEqual(isPrimaryClick({ button: 1 }), false);
 });
+
+test("normalizeWord honors maxLen argument", () => {
+  assert.strictEqual(normalizeWord("insolent", 5), null);
+  assert.strictEqual(normalizeWord("cat", 5), "cat");
+});

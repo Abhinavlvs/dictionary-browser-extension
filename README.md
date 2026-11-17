@@ -8,7 +8,13 @@ Select an English word on any page to see up to 5 definitions. Right-click a sel
 
 Definitions: https://freedictionaryapi.com (Wiktionary, CC BY-SA 4.0).
 
+**Select a word to see its definitions:**
+
 ![Dictionary Lookup showing the definition of a selected word in Firefox](docs/images/screenshot-firefox.png)
+
+**Or right-click a word or phrase to search Merriam-Webster:**
+
+<img src="docs/images/screenshot-context-menu.png" alt="Right-click menu showing the Search in Merriam-Webster item" width="420">
 
 ## Installation
 Requirements: Chrome (or another Chromium browser), or Firefox 127+; Node.js 18+ and the `zip` command to build.

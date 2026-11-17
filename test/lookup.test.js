@@ -62,3 +62,19 @@ test("word is URL-encoded", async () => {
   await createLookup(f)("don’t");
   assert.ok(f.calls[0].endsWith("/don%E2%80%99t"));
 });
+
+test("custom apiUrlTemplate is used", async () => {
+  const f = stub([okRes(unknown)]);
+  await createLookup(f, { apiUrlTemplate: "https://api.test/v2/{word}/x" })("cat");
+  assert.strictEqual(f.calls[0], "https://api.test/v2/cat/x");
+});
+
+test("hung fetch times out as a failure", async () => {
+  const hang = (url, opts) =>
+    new Promise((_, reject) => opts.signal.addEventListener("abort", () => reject(new Error("aborted"))));
+  const t0 = Date.now();
+  const r = await createLookup(hang, { timeoutMs: 20 })("hello");
+  assert.strictEqual(r.ok, false);
+  assert.match(r.error, /timeout/i);
+  assert.ok(Date.now() - t0 < 1000);
+});

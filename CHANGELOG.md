@@ -5,8 +5,17 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-11-17
+
 ### Changed
 - New toolbar and store icons (from Icons8, credited in the README).
+- Error card now shows the actual failure reason.
+
+### Fixed
+- A lookup of the same word started twice could show the first reply in the old position.
+- Selections wrapped in quotes or brackets and accented words (e.g. café) now work.
+- Two quick toolbar clicks could lose one per-site toggle.
+- Tabs left over after an extension update no longer show a misleading connection error.
 
 ## [0.1.0] - 2026-11-17
 

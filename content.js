@@ -5,7 +5,7 @@
   async function fetchState() {
     try {
       return await api.runtime.sendMessage({ type: "getState" });
-    } catch (e) {
+    } catch {
       return null; // extension context unavailable
     }
   }

@@ -67,7 +67,7 @@ api.action.onClicked.addListener(async (tab) => {
   let host;
   try {
     host = await api.tabs.sendMessage(tab.id, { type: "getHost" }, { frameId: 0 });
-  } catch (e) {
+  } catch {
     return; // no content script on this page (browser-internal page, PDF viewer, ...)
   }
   if (!host) return;

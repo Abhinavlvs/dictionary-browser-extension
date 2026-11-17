@@ -29,7 +29,7 @@
   function el(tag, cls, text) {
     const e = document.createElement(tag);
     if (cls) e.className = cls;
-    if (text != null) e.textContent = text;
+    if (text !== undefined && text !== null) e.textContent = text;
     return e;
   }
 
@@ -41,7 +41,9 @@
       return card;
     }
     if (model.state === "error") {
-      card.append(el("div", "muted", "Could not fetch the definition. Check your connection."));
+      card.append(el("div", "muted", "Could not fetch the definition."));
+      if (model.error) card.append(el("div", "muted", "Reason: " + model.error.slice(0, 160)));
+      card.append(el("div", "muted", "If this keeps happening, reload the extension and then this page."));
       return card;
     }
     if (model.state === "notfound") {
@@ -66,8 +68,8 @@
   function place(rect) {
     const margin = 8;
     const w = settings.width;
-    let left = Math.min(Math.max(margin, rect.left), window.innerWidth - w - margin);
-    let top = rect.bottom + margin;
+    const left = Math.min(Math.max(margin, rect.left), window.innerWidth - w - margin);
+    const top = rect.bottom + margin;
     host.style.setProperty("left", left + "px", "important");
     host.style.setProperty("top", top + "px", "important");
     // flip above the selection if it would overflow the bottom

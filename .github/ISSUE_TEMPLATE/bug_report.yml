@@ -1,0 +1,30 @@
+name: Bug report
+description: Something does not work as expected
+labels: [bug]
+body:
+  - type: dropdown
+    id: browser
+    attributes:
+      label: Browser
+      options: [Chrome, Firefox, Other Chromium browser]
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Browser and extension version
+      placeholder: "Firefox 133, extension 0.1.0"
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected vs actual (include the "Reason:" line from the error card if shown)
+    validations:
+      required: true

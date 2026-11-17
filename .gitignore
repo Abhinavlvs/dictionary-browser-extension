@@ -6,3 +6,4 @@ dist/
 web-ext-artifacts/
 *.zip
 *.xpi
+.local/

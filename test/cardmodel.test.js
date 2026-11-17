@@ -36,3 +36,8 @@ test("failure -> error", () => {
 test("showPronunciation false hides ipa", () => {
   assert.strictEqual(cardModel(ok(hello), { showPronunciation: false }).ipa, null);
 });
+
+test("error state carries the reason", () => {
+  assert.deepStrictEqual(cardModel({ ok: false, error: "timeout" }), { state: "error", error: "timeout" });
+  assert.strictEqual(cardModel(null).state, "error");
+});

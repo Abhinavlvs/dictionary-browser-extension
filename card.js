@@ -2,6 +2,8 @@
   let host = null;
   let root = null; // closed shadow root: page scripts cannot reach into the card
   let settings = { width: 320, theme: "auto", showAttribution: true };
+  let current = null; // { rect, model } of the card on screen
+  let examplesOpen = false;
 
   function configureCard(opts) {
     settings = { ...settings, ...opts };
@@ -13,6 +15,13 @@
       background: #fff; color: #1a1a1a; border: 1px solid #d0d0d0; border-radius: 8px;
       box-shadow: 0 4px 16px rgba(0,0,0,.2); padding: 12px 14px;
       font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+    .head { display: flex; justify-content: space-between; align-items: flex-start; gap: 8px; }
+    .toggle { all: unset; box-sizing: border-box; flex: none; cursor: pointer; font-size: 11px; color: #1a56b0;
+      border: 1px solid #c5d3ea; border-radius: 4px; padding: 2px 6px; }
+    .toggle:hover { background: #eef3fb; }
+    .toggle:focus-visible { outline: 2px solid #1a56b0; outline-offset: 1px; }
+    .card.dark .toggle { color: #8ab4f8; border-color: #4a5a78; }
+    .card.dark .toggle:hover { background: #2a3447; }
     .word { font-size: 18px; font-weight: 600; }
     .ipa, .muted { color: #666; font-size: 12px; }
     ol { margin: 8px 0 0; padding-left: 20px; }
@@ -49,14 +58,29 @@
     if (model.state === "notfound") {
       card.append(el("div", "word", model.word || ""), el("div", "muted", "No definition found."));
     } else {
-      card.append(el("span", "word", model.word));
-      if (model.ipa) card.append(document.createTextNode(" "), el("span", "ipa", model.ipa));
+      const head = el("div", "head");
+      const title = el("div", "title");
+      title.append(el("span", "word", model.word));
+      if (model.ipa) title.append(document.createTextNode(" "), el("span", "ipa", model.ipa));
+      head.append(title);
+      if (model.hasExamples) {
+        const btn = el("button", "toggle", examplesOpen ? "Hide examples" : "Show examples");
+        btn.type = "button";
+        btn.setAttribute("aria-expanded", String(examplesOpen));
+        btn.addEventListener("click", (event) => {
+          event.stopPropagation();
+          examplesOpen = !examplesOpen;
+          render();
+        });
+        head.append(btn);
+      }
+      card.append(head);
       const ol = el("ol");
       for (const it of model.items) {
         const li = el("li");
         if (it.partOfSpeech) li.append(el("span", "pos", it.partOfSpeech));
         li.append(document.createTextNode(it.definition));
-        for (const ex of it.examples) li.append(el("div", "ex", "“" + ex + "”"));
+        if (examplesOpen) for (const ex of it.examples) li.append(el("div", "ex", "“" + ex + "”"));
         ol.append(li);
       }
       card.append(ol);
@@ -88,10 +112,17 @@
       root.append(el("style", null, CSS), el("div", "slot"));
       document.documentElement.append(host);
     }
-    const slot = root.querySelector(".slot");
     host.style.setProperty("--w", settings.width + "px");
-    slot.replaceChildren(build(model));
-    place(rect);
+    current = { rect, model };
+    examplesOpen = !!model.examplesOpen;
+    render();
+  }
+
+  // Re-draw the current model (also used by the examples toggle) and re-position the card.
+  function render() {
+    if (!host || !current) return;
+    root.querySelector(".slot").replaceChildren(build(current.model));
+    place(current.rect);
   }
 
   function hideCard() {
@@ -99,6 +130,7 @@
       host.remove();
       host = null;
       root = null;
+      current = null;
     }
   }
 

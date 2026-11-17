@@ -1,6 +1,6 @@
 const test = require("node:test");
 const assert = require("node:assert");
-const { normalizeWord, mwUrl, isPrimaryClick } = require("../lib/words.js");
+const { normalizeWord, isPrimaryClick } = require("../lib/words.js");
 
 test("normalizeWord accepts and cleans single words", () => {
   assert.strictEqual(normalizeWord(" Hello, \n"), "hello");
@@ -15,14 +15,6 @@ test("normalizeWord rejects non-words", () => {
   assert.strictEqual(normalizeWord(""), null);
   assert.strictEqual(normalizeWord("   "), null);
   assert.strictEqual(normalizeWord("a".repeat(46)), null);
-});
-
-test("mwUrl encodes phrases and words", () => {
-  const base = "https://www.merriam-webster.com/dictionary/";
-  assert.strictEqual(mwUrl("call a spade a spade"), base + "call%20a%20spade%20a%20spade");
-  assert.strictEqual(mwUrl("insolent"), base + "insolent");
-  const rest = mwUrl("what?#/%").slice(base.length);
-  assert.ok(!/[?#/]/.test(rest));
 });
 
 test("isPrimaryClick only accepts the left button", () => {

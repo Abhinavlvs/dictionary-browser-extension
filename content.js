@@ -1,6 +1,6 @@
 (async function () {
   const api = globalThis.browser ?? globalThis.chrome;
-  const { normalizeWord, isPrimaryClick, cardModel, showCard, hideCard, isInsideCard, configureCard } = DictExt;
+  const { normalizeWord, isPrimaryClick, isEditable, cardModel, showCard, hideCard, isInsideCard, configureCard } = DictExt;
 
   async function fetchState() {
     try {
@@ -17,6 +17,7 @@
   configureCard({ width: popup.width, theme: popup.theme, showAttribution: popup.showAttribution });
 
   let currentWord = null;
+  let pointerInCard = false; // true while a click that started inside the card is in progress
 
   function dismiss() {
     currentWord = null;
@@ -41,8 +42,9 @@
     });
   }
 
-  async function onSelect(event) {
-    if (!enabled || isInsideCard(event)) return;
+  async function onSelect() {
+    if (!enabled) return;
+    if (isEditable(document.activeElement)) return dismiss(); // never send text typed/selected in form fields
     const sel = window.getSelection();
     const word = sel && sel.rangeCount ? normalizeWord(sel.toString(), popup.maxWordLength) : null;
     if (!word) return dismiss();
@@ -63,18 +65,23 @@
     }));
   }
 
-  // wait a tick so the selection is final (double-click select)
-  const trigger = (e) => setTimeout(() => onSelect(e), 0);
-  if (popup.trigger === "doubleClick") {
-    document.addEventListener("dblclick", (e) => { if (isPrimaryClick(e)) trigger(e); });
-  } else {
-    document.addEventListener("mouseup", (e) => { if (isPrimaryClick(e)) trigger(e); });
-  }
+  // Only real user gestures count: pages can dispatch synthetic events (isTrusted === false).
+  // isInsideCard must be evaluated synchronously: composedPath() is empty once dispatch has finished.
+  const trigger = (e) => {
+    if (!e.isTrusted || !isPrimaryClick(e) || isInsideCard(e)) return;
+    setTimeout(onSelect, 0); // wait a tick so the selection is final (double-click select)
+  };
+  document.addEventListener(popup.trigger === "doubleClick" ? "dblclick" : "mouseup", trigger);
+  document.addEventListener("mouseup", () => setTimeout(() => { pointerInCard = false; }, 0), true);
   document.addEventListener("contextmenu", dismiss, true);
-  document.addEventListener("mousedown", (e) => { if (!isInsideCard(e)) dismiss(); }, true);
+  document.addEventListener("mousedown", (e) => {
+    pointerInCard = isInsideCard(e); // clicking inside the card must not close it
+    if (!pointerInCard) dismiss();
+  }, true);
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") dismiss(); }, true);
   window.addEventListener("scroll", dismiss, true);
   document.addEventListener("selectionchange", () => {
+    if (pointerInCard) return; // clicking in the card collapses the page selection; keep the card
     const sel = window.getSelection();
     if (!sel || sel.isCollapsed) dismiss();
   });

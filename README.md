@@ -8,6 +8,13 @@ Definitions: https://freedictionaryapi.com (Wiktionary, CC BY-SA 4.0).
 - Chrome: `chrome://extensions` -> Developer mode -> Load unpacked -> this folder.
 - Firefox: `about:debugging` -> This Firefox -> Load Temporary Add-on -> `manifest.json`.
 
+## Privacy and security
+- Only a single word you select with the mouse is sent, to `dictionary.apiUrlTemplate` (default freedictionaryapi.com), with no cookies and no referrer. Text selected inside inputs, textareas and editors is never sent. Phrases are never sent anywhere automatically; the right-click search only opens a page when you pick it.
+- Disable the popup per site with the toolbar button, or turn it off entirely with `popup.enabled`.
+- URL templates in `config.json` must be `https://`; anything else is ignored.
+- Synthetic events from web pages are ignored, and the card lives in a closed shadow root.
+- Firefox 127+ is required (earlier versions do not grant the content-script permission at install).
+
 ## Configure
 Edit `config.json`, then click **Reload** on the extension (browsers cannot re-read the file while it runs). Missing or invalid values fall back to the defaults, so a typo cannot break it.
 

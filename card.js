@@ -1,5 +1,6 @@
 (function () {
   let host = null;
+  let root = null; // closed shadow root: page scripts cannot reach into the card
   let settings = { width: 320, theme: "auto", showAttribution: true };
 
   function configureCard(opts) {
@@ -67,24 +68,25 @@
     const w = settings.width;
     let left = Math.min(Math.max(margin, rect.left), window.innerWidth - w - margin);
     let top = rect.bottom + margin;
-    host.style.left = left + "px";
-    host.style.top = top + "px";
+    host.style.setProperty("left", left + "px", "important");
+    host.style.setProperty("top", top + "px", "important");
     // flip above the selection if it would overflow the bottom
     const h = host.getBoundingClientRect().height;
     if (top + h > window.innerHeight - margin && rect.top - h - margin > 0) {
-      host.style.top = rect.top - h - margin + "px";
+      host.style.setProperty("top", rect.top - h - margin + "px", "important");
     }
   }
 
   function showCard(rect, model) {
     if (!host) {
-      host = document.createElement("div");
-      host.style.cssText = "position:fixed;z-index:2147483647;";
-      const root = host.attachShadow({ mode: "open" });
+      // Custom tag name + !important so page CSS selectors (div, html > div, ...) do not restyle the host.
+      host = document.createElement("dictext-card");
+      host.style.cssText = "all:initial!important;position:fixed!important;z-index:2147483647!important;display:block!important;";
+      root = host.attachShadow({ mode: "closed" });
       root.append(el("style", null, CSS), el("div", "slot"));
       document.documentElement.append(host);
     }
-    const slot = host.shadowRoot.querySelector(".slot");
+    const slot = root.querySelector(".slot");
     host.style.setProperty("--w", settings.width + "px");
     slot.replaceChildren(build(model));
     place(rect);
@@ -94,6 +96,7 @@
     if (host) {
       host.remove();
       host = null;
+      root = null;
     }
   }
 

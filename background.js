@@ -60,7 +60,8 @@ async function getState(sender) {
   return { config: cfg, enabled };
 }
 
-// Toolbar button: toggle the popup for the current site.
+// Toolbar button: toggle the popup for the current site. The host is requested from the page's
+// content script (frame 0) instead of reading tab.url, so no "tabs" permission is needed.
 api.action.onClicked.addListener(async (tab) => {
   let host;
   try {
@@ -74,14 +75,23 @@ api.action.onClicked.addListener(async (tab) => {
   await api.storage.local.set({ [OVERRIDES_KEY]: next });
 });
 
+async function handleLookup(rawWord) {
+  const cfg = await configPromise;
+  const word = DictExt.normalizeWord(rawWord, cfg.popup.maxWordLength);
+  if (!word) return { ok: false, error: "invalid word" };
+  return (await lookupPromise)(word);
+}
+
+// The background is the trust boundary: only this extension's own scripts may talk to it,
+// and every field is re-validated here regardless of what the content script already checked.
 api.runtime.onMessage.addListener((msg, sender, sendResponse) => {
-  if (!msg) return false;
+  if (!msg || sender.id !== api.runtime.id) return false;
   if (msg.type === "getState") {
     getState(sender).then(sendResponse);
     return true;
   }
-  if (msg.type === "lookup" && typeof msg.word === "string") {
-    lookupPromise.then((lookup) => lookup(msg.word)).then(sendResponse);
+  if (msg.type === "lookup") {
+    handleLookup(msg.word).then(sendResponse);
     return true; // keep channel open for async reply (Chrome and Firefox)
   }
   return false;

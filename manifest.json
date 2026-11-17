@@ -20,5 +20,5 @@
     }
   ],
   "icons": { "48": "icons/icon-48.png", "128": "icons/icon-128.png" },
-  "browser_specific_settings": { "gecko": { "id": "dictionary-lookup@local", "strict_min_version": "121.0" } }
+  "browser_specific_settings": { "gecko": { "id": "dictionary-lookup@local", "strict_min_version": "127.0" } }
 }

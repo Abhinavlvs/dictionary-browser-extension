@@ -8,8 +8,9 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 ## [0.2.0] - 2026-11-17
 
 ### Added
+- Toolbar button now opens a panel showing On or Off for the current site, a toggle, and a link to the saved words (replaces click-to-toggle).
 - "Show examples" button on the popup card to reveal or hide examples (`popup.showExamples` sets the initial state).
-- Saved words: every word that returns a definition is saved on your device with a lookup count and times. Right-click, then "Open saved words" to search, delete, clear or export them as CSV. Controlled by `popup.saveWords` and `popup.maxSavedWords`.
+- Saved words: every word that returns a definition is saved on your device with a lookup count and times. Right-click, then "Open saved words" to search, delete, clear or export them as CSV. Export and import a JSON file to merge the list between Chrome and Firefox. Controlled by `popup.saveWords` and `popup.maxSavedWords`.
 
 ## [0.1.1] - 2026-11-17
 

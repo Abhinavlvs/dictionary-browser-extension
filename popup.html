@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Dictionary Lookup</title>
+  <style>
+    :root { color-scheme: light dark; }
+    body { margin: 0; width: 260px; padding: 12px; font: 14px/1.4 system-ui, -apple-system, "Segoe UI", sans-serif; }
+    h1 { margin: 0 0 8px; font-size: 15px; }
+    .site { font-weight: 600; word-break: break-all; }
+    .state { margin: 2px 0 10px; font-size: 13px; opacity: .8; }
+    button { display: block; width: 100%; margin-top: 6px; padding: 7px 10px; font: inherit; cursor: pointer; }
+    button:disabled { cursor: default; }
+  </style>
+</head>
+<body>
+  <h1>Dictionary Lookup</h1>
+  <div class="site" id="site"></div>
+  <div class="state" id="state" role="status"></div>
+  <button id="toggle" type="button" disabled></button>
+  <button id="saved" type="button"></button>
+  <script src="popup.js"></script>
+</body>
+</html>

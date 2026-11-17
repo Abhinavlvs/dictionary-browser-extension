@@ -15,3 +15,4 @@ li { display: flex; gap: 12px; justify-content: space-between; padding: 10px 0; 
 .pos { color: var(--accent); font-style: italic; font-size: 12px; margin-left: 6px; }
 .meta { color: var(--muted); font-size: 12px; margin-top: 2px; }
 li button { align-self: flex-start; flex: none; }
+[hidden]{display:none!important}

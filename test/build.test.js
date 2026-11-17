@@ -40,13 +40,19 @@ test("deriveManifests does not mutate its input", () => {
   assert.deepStrictEqual(base, copy);
 });
 
+test("toolbar button opens popup.html in both browsers", () => {
+  const { chrome, firefox } = deriveManifests(base, bgSource);
+  assert.strictEqual(chrome.action.default_popup, "popup.html");
+  assert.strictEqual(firefox.action.default_popup, "popup.html");
+});
+
 test("every file a manifest references exists", () => {
   const { chrome, firefox } = deriveManifests(base, bgSource);
   for (const m of [chrome, firefox]) {
     const refs = [
       m.background.service_worker, ...(m.background.scripts || []),
       ...m.content_scripts.flatMap((c) => c.js),
-      ...Object.values(m.icons), ...Object.values(m.action.default_icon),
+      ...Object.values(m.icons), ...Object.values(m.action.default_icon), m.action.default_popup,
     ].filter(Boolean);
     for (const f of refs) assert.ok(fs.existsSync(path.join(root, f)), "missing " + f);
   }

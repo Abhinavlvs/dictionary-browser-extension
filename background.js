@@ -70,23 +70,34 @@ async function getState(sender) {
   return { config: cfg, enabled };
 }
 
-// Toolbar button: toggle the popup for the current site. The host is requested from the page's
-// content script (frame 0) instead of reading tab.url, so no "tabs" permission is needed.
-api.action.onClicked.addListener(async (tab) => {
-  let host;
+// Toolbar popup helpers. The host is requested from the page's content script (frame 0) instead of
+// reading tab.url, so no "tabs" permission is needed.
+async function hostForTab(tabId) {
   try {
-    host = await api.tabs.sendMessage(tab.id, { type: "getHost" }, { frameId: 0 });
+    return (await api.tabs.sendMessage(tabId, { type: "getHost" }, { frameId: 0 })) || null;
   } catch {
-    return; // no content script on this page (browser-internal page, PDF viewer, ...)
+    return null; // no content script on this page (browser-internal page, PDF viewer, ...)
   }
-  if (!host) return;
+}
+
+async function siteState(tabId) {
+  const host = await hostForTab(tabId);
+  if (!host) return { host: null };
+  const cfg = await configPromise;
+  return { host, enabled: DictExt.isEnabled(host, cfg.popup.disabledHosts, await getOverrides()) };
+}
+
+async function toggleSite(tabId) {
+  const host = await hostForTab(tabId);
+  if (!host) return { host: null };
   const cfg = await configPromise;
   // Two quick clicks must not both read the same old value and lose one update.
   await runExclusive(async () => {
     const next = DictExt.toggleOverrides(host, cfg.popup.disabledHosts, await getOverrides());
     await api.storage.local.set({ [OVERRIDES_KEY]: next });
   });
-});
+  return siteState(tabId);
+}
 
 async function handleLookup(rawWord) {
   const cfg = await configPromise;
@@ -114,6 +125,10 @@ api.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (!msg || sender.id !== api.runtime.id) return false;
   if (msg.type === "getState") {
     getState(sender).then(sendResponse);
+    return true;
+  }
+  if ((msg.type === "siteState" || msg.type === "toggleSite") && Number.isInteger(msg.tabId)) {
+    (msg.type === "siteState" ? siteState : toggleSite)(msg.tabId).then(sendResponse);
     return true;
   }
   if (msg.type === "lookup") {

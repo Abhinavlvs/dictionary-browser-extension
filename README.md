@@ -56,7 +56,7 @@ Double-click a word on any normal web page, such as a Wikipedia article. A card 
 ### Troubleshooting
 - Nothing happens: reload the page; in Firefox check the all-websites permission; make sure you are not on a `chrome://` or `about:` page.
 - Chrome shows an error on load: you probably selected the repo folder or a different one. Select `dist/chrome`.
-- The `OFF` badge is showing: the popup is disabled for this site. Click the toolbar button to turn it back on.
+- The `OFF` badge is showing: the popup is disabled for this site. Click the toolbar button and choose **Turn on for this site**.
 
 ## Privacy and security
 - Only a single word you select with the mouse is sent, to `dictionary.apiUrlTemplate` (default freedictionaryapi.com), with no cookies and no referrer. Text selected inside inputs, textareas and editors is never sent. Phrases are never sent anywhere automatically; the right-click search only opens a page when you pick it.
@@ -90,10 +90,12 @@ Edit `config.json`, then click **Reload** on the extension (browsers cannot re-r
 | `dictionary.timeoutMs` | 8000 | |
 
 ## Saved words
-Every word that returns a definition is saved on your device (browser extension storage, never sent anywhere) with its first definition, how many times you looked it up, and first and last lookup times. Right-click anywhere on a page and choose **Open saved words** to search, delete single words, clear the list, or **Export CSV**. Set `popup.saveWords` to `false` to stop saving. Words are not saved on sites where the popup is turned off, because no lookup happens there.
+Every word that returns a definition is saved on your device (browser extension storage, never sent anywhere) with its first definition, how many times you looked it up, and first and last lookup times. Right-click anywhere on a page and choose **Open saved words** to search, delete single words, clear the list, or **Export CSV**. Set `popup.saveWords` to `false` to stop saving.
+
+**Same list in Chrome and Firefox:** browsers keep extension data separately, so use the page's **Export file** and **Import file** buttons. Import merges: counts add up, the earliest first-seen and latest last-seen are kept, and no word is duplicated. Keep the exported file in a synced folder (iCloud, Dropbox, a Git repo) to carry it between browsers. Words are not saved on sites where the popup is turned off, because no lookup happens there.
 
 ## Turn it off or on for one site
-Click the extension's toolbar button while on a page: it toggles the popup for that whole site (hostname). The badge shows `OFF` while disabled; click again to re-enable. The choice is remembered by the browser and beats `popup.disabledHosts`. Right-click search keeps working on disabled sites. The button does nothing on pages where the extension cannot run.
+Click the extension's toolbar button while on a page. A small panel shows the site and whether lookups are On or Off, with a button to turn it off or on for that whole site (hostname), and a **View saved words** button with your word count. The badge shows `OFF` while disabled. The choice is remembered by the browser and beats `popup.disabledHosts`. Right-click search keeps working on disabled sites. On pages where the extension cannot run, the panel says so and the toggle is disabled.
 
 ## Private windows
 Browsers require a one-time opt-in:

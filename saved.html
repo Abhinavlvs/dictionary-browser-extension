@@ -12,12 +12,17 @@
     <p class="muted" id="summary"></p>
     <div class="bar">
       <input id="search" type="search" placeholder="Search words and definitions" aria-label="Search saved words">
+      <button id="exportJson" type="button" title="Backup or move to the other browser">Export file</button>
+      <button id="import" type="button" title="Merge a file exported from Chrome or Firefox">Import file</button>
+      <input id="importFile" type="file" accept=".json,application/json" hidden>
       <button id="export" type="button">Export CSV</button>
       <button id="clear" type="button" class="danger">Clear all</button>
     </div>
     <ul id="list"></ul>
+    <p class="muted" id="status" role="status"></p>
     <p id="empty" class="muted" hidden>No saved words yet. Look up a word and it appears here.</p>
   </main>
+  <script src="lib/config.js"></script>
   <script src="lib/saved.js"></script>
   <script src="saved.js"></script>
 </body>

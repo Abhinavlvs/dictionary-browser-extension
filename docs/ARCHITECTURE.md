@@ -27,6 +27,7 @@
 ## Message protocol (content -> background)
 - `{type: "getState"}` -> `{config, enabled}`; also updates the toolbar badge for frame 0.
 - `{type: "lookup", word}` -> `{ok: true, data}` or `{ok: false, error}`. The background re-validates `word`.
+- Toolbar popup -> background: `{type: "siteState", tabId}` and `{type: "toggleSite", tabId}` -> `{host, enabled}` (`host` is null where no content script runs).
 - Background -> content (frame 0 only): `{type: "getHost"}` -> hostname, used by the toolbar toggle so no `tabs` permission is required.
 - Toggle state lives in `storage.local` key `siteOverrides` (`{host: boolean}`); `storage.onChanged` tells content scripts to refresh.
 

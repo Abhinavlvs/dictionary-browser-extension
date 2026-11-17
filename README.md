@@ -10,7 +10,7 @@ Definitions: https://freedictionaryapi.com (Wiktionary, CC BY-SA 4.0).
 
 **Select a word to see its definitions:**
 
-![Dictionary Lookup showing the definition of a selected word in Firefox](docs/images/screenshot-firefox.png)
+![Dictionary Lookup showing the definitions of a selected word on a Wikipedia article](docs/images/screenshot-popup.png)
 
 **Or right-click a word or phrase to search Merriam-Webster:**
 

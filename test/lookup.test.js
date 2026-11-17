@@ -15,7 +15,11 @@ function stub(responses) {
   fn.calls = calls;
   return fn;
 }
-const okRes = (body) => ({ ok: true, status: 200, json: async () => body });
+const okRes = (body, type = "application/json; charset=utf-8") => ({
+  ok: true, status: 200,
+  headers: { get: (h) => (h.toLowerCase() === "content-type" ? type : null) },
+  text: async () => (typeof body === "string" ? body : JSON.stringify(body)),
+});
 
 test("success returns parsed data and hits the right URL", async () => {
   const f = stub([okRes(hello)]);
@@ -44,7 +48,7 @@ test("not-found (entries: []) is ok and cached", async () => {
 });
 
 test("HTTP 500 is a failure and is not cached", async () => {
-  const f = stub([{ ok: false, status: 500, json: async () => ({}) }, okRes(hello)]);
+  const f = stub([{ ok: false, status: 500, headers: { get: () => null }, text: async () => "" }, okRes(hello)]);
   const lookup = createLookup(f);
   assert.strictEqual((await lookup("hello")).ok, false);
   assert.strictEqual((await lookup("hello")).ok, true);
@@ -77,4 +81,49 @@ test("hung fetch times out as a failure", async () => {
   assert.strictEqual(r.ok, false);
   assert.match(r.error, /timeout/i);
   assert.ok(Date.now() - t0 < 1000);
+});
+
+test("fetch is hardened: no credentials, no referrer, redirects rejected", async () => {
+  let seen;
+  const f = async (url, opts) => { seen = opts; return okRes(unknown); };
+  await createLookup(f)("cat");
+  assert.strictEqual(seen.credentials, "omit");
+  assert.strictEqual(seen.referrerPolicy, "no-referrer");
+  assert.strictEqual(seen.redirect, "error");
+  assert.ok(seen.signal);
+});
+
+test("non-JSON content-type is rejected", async () => {
+  const r = await createLookup(stub([okRes("<html></html>", "text/html")]))("cat");
+  assert.strictEqual(r.ok, false);
+});
+
+test("oversized body is rejected", async () => {
+  const r = await createLookup(stub([okRes("x".repeat(600 * 1024))]))("cat");
+  assert.strictEqual(r.ok, false);
+});
+
+test("invalid JSON is a failure, not a throw", async () => {
+  const r = await createLookup(stub([okRes("{nope")]))("cat");
+  assert.strictEqual(r.ok, false);
+});
+
+test("concurrent lookups of the same word share one request", async () => {
+  const f = stub([okRes(hello)]);
+  const lookup = createLookup(f);
+  const [a, b] = await Promise.all([lookup("hello"), lookup("hello")]);
+  assert.strictEqual(f.calls.length, 1);
+  assert.strictEqual(a.ok && b.ok, true);
+});
+
+test("cache is bounded (oldest evicted)", async () => {
+  const f = async () => okRes(unknown);
+  let n = 0;
+  const counting = async (u, o) => { n++; return f(u, o); };
+  const lookup = createLookup(counting, { maxCacheEntries: 2 });
+  await lookup("aa"); await lookup("bb"); await lookup("cc"); // evicts aa
+  await lookup("cc"); await lookup("bb"); // cached
+  assert.strictEqual(n, 3);
+  await lookup("aa"); // refetched
+  assert.strictEqual(n, 4);
 });

@@ -49,3 +49,11 @@ test("popup.disabledHosts: default empty, valid list kept, junk filtered/rejecte
   assert.deepStrictEqual(mergeConfig({ popup: { disabledHosts: ["a.com", 5, ""] } }).popup.disabledHosts, ["a.com"]);
   assert.deepStrictEqual(mergeConfig({ popup: { disabledHosts: "a.com" } }).popup.disabledHosts, []);
 });
+
+test("URL templates must be https", () => {
+  for (const bad of ["http://x.test/{query}", "javascript:alert({query})", "data:text/html,{query}", "file:///{query}", "not a url {query}"]) {
+    assert.strictEqual(mergeConfig({ contextMenu: { urlTemplate: bad } }).contextMenu.urlTemplate, DEFAULTS.contextMenu.urlTemplate, bad);
+  }
+  assert.strictEqual(mergeConfig({ dictionary: { apiUrlTemplate: "http://x.test/{word}" } }).dictionary.apiUrlTemplate, DEFAULTS.dictionary.apiUrlTemplate);
+  assert.strictEqual(mergeConfig({ contextMenu: { urlTemplate: "https://x.test/{query}" } }).contextMenu.urlTemplate, "https://x.test/{query}");
+});

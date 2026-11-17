@@ -1,6 +1,6 @@
 const test = require("node:test");
 const assert = require("node:assert");
-const { normalizeWord, isPrimaryClick } = require("../lib/words.js");
+const { normalizeWord, isPrimaryClick, isEditable } = require("../lib/words.js");
 
 test("normalizeWord accepts and cleans single words", () => {
   assert.strictEqual(normalizeWord(" Hello, \n"), "hello");
@@ -26,4 +26,12 @@ test("isPrimaryClick only accepts the left button", () => {
 test("normalizeWord honors maxLen argument", () => {
   assert.strictEqual(normalizeWord("insolent", 5), null);
   assert.strictEqual(normalizeWord("cat", 5), "cat");
+});
+
+test("isEditable detects form fields and contenteditable", () => {
+  assert.strictEqual(isEditable({ tagName: "INPUT" }), true);
+  assert.strictEqual(isEditable({ tagName: "textarea" }), true);
+  assert.strictEqual(isEditable({ tagName: "DIV", isContentEditable: true }), true);
+  assert.strictEqual(isEditable({ tagName: "P", isContentEditable: false }), false);
+  assert.strictEqual(isEditable(null), false);
 });

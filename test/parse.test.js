@@ -35,3 +35,12 @@ test("firstIpa", () => {
   assert.strictEqual(firstIpa(parseResponse(hello)), "/hɛˈloʊ/");
   assert.strictEqual(firstIpa(parseResponse(unknown)), null);
 });
+
+test("deeply nested subsenses are bounded (no stack overflow)", () => {
+  let node = { definition: "leaf" };
+  for (let i = 0; i < 100000; i++) node = { definition: "d", subsenses: [node] };
+  const p = parseResponse({ word: "x", entries: [{ senses: [node] }] });
+  let depth = 0, cur = p.entries[0].senses[0];
+  while (cur.subsenses.length) { cur = cur.subsenses[0]; depth++; }
+  assert.ok(depth <= 10);
+});

@@ -6,7 +6,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 ## [Unreleased]
 
 ### Changed
-- New toolbar and store icons.
+- New toolbar and store icons (from Icons8, credited in the README).
 
 ## [0.1.0] - 2026-11-17
 

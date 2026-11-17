@@ -96,4 +96,8 @@ It cannot run on browser-internal pages (`chrome://`, `about:`), the Chrome Web 
 `npm test` (Node 18+, no dependencies).
 
 ## License
-MIT, see `LICENSE`. The MIT licence covers the code in this repository. The toolbar icon (`icons/`) is a third-party image and is not covered by it; check its original licence and credit the author before redistributing. Definitions come from Wiktionary under CC BY-SA 4.0 (via freedictionaryapi.com).
+MIT, see `LICENSE`. The MIT licence covers the code in this repository, not the third-party assets below.
+
+## Credits
+- Icons: [Icons8](https://icons8.com). They are used under Icons8's free licence, which asks for a link back to icons8.com; check their current licence terms before redistributing or publishing the extension to a store.
+- Definitions: [Free Dictionary API](https://freedictionaryapi.com), built on Wiktionary data (CC BY-SA 4.0).

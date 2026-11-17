@@ -1,0 +1,22 @@
+{
+  "popup": {
+    "enabled": true,
+    "maxDefinitions": 5,
+    "showExamples": false,
+    "showPronunciation": true,
+    "showAttribution": true,
+    "trigger": "selection",
+    "maxWordLength": 45,
+    "width": 320,
+    "theme": "auto"
+  },
+  "contextMenu": {
+    "enabled": true,
+    "title": "Search in Merriam-Webster",
+    "urlTemplate": "https://www.merriam-webster.com/dictionary/{query}"
+  },
+  "dictionary": {
+    "apiUrlTemplate": "https://freedictionaryapi.com/api/v1/entries/en/{word}",
+    "timeoutMs": 8000
+  }
+}

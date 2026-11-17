@@ -8,8 +8,32 @@ Definitions: https://freedictionaryapi.com (Wiktionary, CC BY-SA 4.0).
 - Chrome: `chrome://extensions` -> Developer mode -> Load unpacked -> this folder.
 - Firefox: `about:debugging` -> This Firefox -> Load Temporary Add-on -> `manifest.json`.
 
+## Configure
+Edit `config.json`, then click **Reload** on the extension (browsers cannot re-read the file while it runs). Missing or invalid values fall back to the defaults, so a typo cannot break it.
+
+| Key | Default | Notes |
+|---|---|---|
+| `popup.enabled` | true | false turns the popup off |
+| `popup.maxDefinitions` | 5 | positive integer |
+| `popup.showExamples` | false | |
+| `popup.showPronunciation` | true | IPA |
+| `popup.showAttribution` | true | keep on to respect the Wiktionary licence |
+| `popup.trigger` | "selection" | or "doubleClick" |
+| `popup.maxWordLength` | 45 | longer selections are ignored |
+| `popup.width` | 320 | pixels |
+| `popup.theme` | "auto" | "light" or "dark" |
+| `contextMenu.enabled` | true | |
+| `contextMenu.title` | "Search in Merriam-Webster" | |
+| `contextMenu.urlTemplate` | MW URL | must contain `{query}` (URL-encoded on use) |
+| `dictionary.apiUrlTemplate` | freedictionaryapi URL | must contain `{word}` |
+| `dictionary.timeoutMs` | 8000 | |
+
+## Private windows
+Browsers require a one-time opt-in:
+- Chrome: `chrome://extensions` -> Details -> Allow in Incognito (and "Allow access to file URLs" for local files).
+- Firefox: `about:addons` -> Dictionary Lookup -> Run in Private Windows.
+
+It cannot run on browser-internal pages (`chrome://`, `about:`), the Chrome Web Store, addons.mozilla.org, or the built-in PDF viewer.
+
 ## Test
 `npm test` (Node 18+, no dependencies).
-
-## Show examples later
-`cardModel(result, { showExamples: true })` in `content.js` includes examples; `card.js` already renders them.

@@ -4,6 +4,8 @@ Select an English word on any page to see up to 5 definitions. Right-click a sel
 
 Definitions: https://freedictionaryapi.com (Wiktionary, CC BY-SA 4.0).
 
+![Dictionary Lookup showing the definition of a selected word in Firefox](docs/images/screenshot-firefox.png)
+
 ## Installation
 Requirements: Chrome (or another Chromium browser), or Firefox 127+; Node.js 18+ and the `zip` command to build.
 

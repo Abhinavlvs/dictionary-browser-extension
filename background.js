@@ -1,9 +1,10 @@
 if (typeof importScripts === "function") {
-  importScripts("lib/parse.js", "lib/words.js", "lib/config.js", "lib/lookup.js");
+  importScripts("lib/parse.js", "lib/words.js", "lib/config.js", "lib/sites.js", "lib/lookup.js");
 }
 
 const api = globalThis.browser ?? globalThis.chrome;
 const MENU_ID = "mw-search";
+const OVERRIDES_KEY = "siteOverrides"; // { host: boolean } set by the toolbar toggle
 
 // Load config.json once per background start; fall back to defaults on any error.
 const configPromise = (async () => {
@@ -38,10 +39,45 @@ api.contextMenus.onClicked.addListener(async (info) => {
   api.tabs.create({ url: DictExt.fillTemplate(cfg.contextMenu.urlTemplate, "query", text) });
 });
 
-api.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
+async function getOverrides() {
+  const r = await api.storage.local.get(OVERRIDES_KEY);
+  return r[OVERRIDES_KEY] || {};
+}
+
+// URL of the page the message came from; for iframes prefer the tab (top page) URL when available.
+function pageUrl(sender) {
+  if (sender.frameId === 0) return sender.url;
+  return (sender.tab && sender.tab.url) || sender.url;
+}
+
+async function getState(sender) {
+  const cfg = await configPromise;
+  const host = DictExt.hostOf(pageUrl(sender));
+  const enabled = host ? DictExt.isEnabled(host, cfg.popup.disabledHosts, await getOverrides()) : true;
+  if (sender.tab && sender.frameId === 0) {
+    api.action.setBadgeText({ tabId: sender.tab.id, text: enabled ? "" : "OFF" }).catch(() => {});
+  }
+  return { config: cfg, enabled };
+}
+
+// Toolbar button: toggle the popup for the current site.
+api.action.onClicked.addListener(async (tab) => {
+  let host;
+  try {
+    host = await api.tabs.sendMessage(tab.id, { type: "getHost" }, { frameId: 0 });
+  } catch (e) {
+    return; // no content script on this page (browser-internal page, PDF viewer, ...)
+  }
+  if (!host) return;
+  const cfg = await configPromise;
+  const next = DictExt.toggleOverrides(host, cfg.popup.disabledHosts, await getOverrides());
+  await api.storage.local.set({ [OVERRIDES_KEY]: next });
+});
+
+api.runtime.onMessage.addListener((msg, sender, sendResponse) => {
   if (!msg) return false;
-  if (msg.type === "getConfig") {
-    configPromise.then(sendResponse);
+  if (msg.type === "getState") {
+    getState(sender).then(sendResponse);
     return true;
   }
   if (msg.type === "lookup" && typeof msg.word === "string") {

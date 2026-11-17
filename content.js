@@ -2,14 +2,18 @@
   const api = globalThis.browser ?? globalThis.chrome;
   const { normalizeWord, isPrimaryClick, cardModel, showCard, hideCard, isInsideCard, configureCard } = DictExt;
 
-  let cfg;
-  try {
-    cfg = await api.runtime.sendMessage({ type: "getConfig" });
-  } catch (e) {
-    return; // extension context unavailable
+  async function fetchState() {
+    try {
+      return await api.runtime.sendMessage({ type: "getState" });
+    } catch (e) {
+      return null; // extension context unavailable
+    }
   }
-  if (!cfg || !cfg.popup || !cfg.popup.enabled) return;
-  const popup = cfg.popup;
+
+  const state = await fetchState();
+  if (!state || !state.config || !state.config.popup.enabled) return;
+  const popup = state.config.popup;
+  let enabled = state.enabled;
   configureCard({ width: popup.width, theme: popup.theme, showAttribution: popup.showAttribution });
 
   let currentWord = null;
@@ -19,8 +23,26 @@
     hideCard();
   }
 
+  // Toolbar toggle (any tab of this site) changes storage; re-ask the background for our state.
+  api.storage.onChanged.addListener(async () => {
+    const s = await fetchState();
+    if (!s) return;
+    enabled = s.enabled;
+    if (!enabled) dismiss();
+  });
+
+  if (window === window.top) {
+    api.runtime.onMessage.addListener((msg, _sender, sendResponse) => {
+      if (msg && msg.type === "getHost") {
+        sendResponse(DictExt.hostOf(location.href));
+        return true;
+      }
+      return false;
+    });
+  }
+
   async function onSelect(event) {
-    if (isInsideCard(event)) return;
+    if (!enabled || isInsideCard(event)) return;
     const sel = window.getSelection();
     const word = sel && sel.rangeCount ? normalizeWord(sel.toString(), popup.maxWordLength) : null;
     if (!word) return dismiss();

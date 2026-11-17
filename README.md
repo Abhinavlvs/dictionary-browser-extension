@@ -22,11 +22,15 @@ Edit `config.json`, then click **Reload** on the extension (browsers cannot re-r
 | `popup.maxWordLength` | 45 | longer selections are ignored |
 | `popup.width` | 320 | pixels |
 | `popup.theme` | "auto" | "light" or "dark" |
+| `popup.disabledHosts` | [] | sites where the popup starts disabled, e.g. `["mail.google.com"]` |
 | `contextMenu.enabled` | true | |
 | `contextMenu.title` | "Search in Merriam-Webster" | |
 | `contextMenu.urlTemplate` | MW URL | must contain `{query}` (URL-encoded on use) |
 | `dictionary.apiUrlTemplate` | freedictionaryapi URL | must contain `{word}` |
 | `dictionary.timeoutMs` | 8000 | |
+
+## Turn it off or on for one site
+Click the extension's toolbar button while on a page: it toggles the popup for that whole site (hostname). The badge shows `OFF` while disabled; click again to re-enable. The choice is remembered by the browser and beats `popup.disabledHosts`. Right-click search keeps working on disabled sites. The button does nothing on pages where the extension cannot run.
 
 ## Private windows
 Browsers require a one-time opt-in:

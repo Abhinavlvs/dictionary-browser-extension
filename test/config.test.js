@@ -42,3 +42,10 @@ test("fillTemplate encodes the value", () => {
   assert.strictEqual(fillTemplate(t, "query", "insolent"), base + "insolent");
   assert.ok(!/[?#/]/.test(fillTemplate(t, "query", "what?#/%").slice(base.length)));
 });
+
+test("popup.disabledHosts: default empty, valid list kept, junk filtered/rejected", () => {
+  assert.deepStrictEqual(DEFAULTS.popup.disabledHosts, []);
+  assert.deepStrictEqual(mergeConfig({ popup: { disabledHosts: ["a.com", "B.org"] } }).popup.disabledHosts, ["a.com", "b.org"]);
+  assert.deepStrictEqual(mergeConfig({ popup: { disabledHosts: ["a.com", 5, ""] } }).popup.disabledHosts, ["a.com"]);
+  assert.deepStrictEqual(mergeConfig({ popup: { disabledHosts: "a.com" } }).popup.disabledHosts, []);
+});

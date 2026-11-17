@@ -8,7 +8,8 @@
     "trigger": "selection",
     "maxWordLength": 45,
     "width": 320,
-    "theme": "auto"
+    "theme": "auto",
+    "disabledHosts": []
   },
   "contextMenu": {
     "enabled": true,

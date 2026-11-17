@@ -57,3 +57,10 @@ test("URL templates must be https", () => {
   assert.strictEqual(mergeConfig({ dictionary: { apiUrlTemplate: "http://x.test/{word}" } }).dictionary.apiUrlTemplate, DEFAULTS.dictionary.apiUrlTemplate);
   assert.strictEqual(mergeConfig({ contextMenu: { urlTemplate: "https://x.test/{query}" } }).contextMenu.urlTemplate, "https://x.test/{query}");
 });
+
+test("saveWords defaults on; maxSavedWords validated", () => {
+  assert.strictEqual(DEFAULTS.popup.saveWords, true);
+  assert.strictEqual(mergeConfig({ popup: { saveWords: false } }).popup.saveWords, false);
+  assert.strictEqual(mergeConfig({ popup: { maxSavedWords: 10 } }).popup.maxSavedWords, 10);
+  assert.strictEqual(mergeConfig({ popup: { maxSavedWords: 0, saveWords: "no" } }).popup.maxSavedWords, 5000);
+});

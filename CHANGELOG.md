@@ -5,6 +5,12 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-11-17
+
+### Added
+- "Show examples" button on the popup card to reveal or hide examples (`popup.showExamples` sets the initial state).
+- Saved words: every word that returns a definition is saved on your device with a lookup count and times. Right-click, then "Open saved words" to search, delete, clear or export them as CSV. Controlled by `popup.saveWords` and `popup.maxSavedWords`.
+
 ## [0.1.1] - 2026-11-17
 
 ### Changed

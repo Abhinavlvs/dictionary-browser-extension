@@ -5,7 +5,7 @@ const path = require("node:path");
 const { execFileSync } = require("node:child_process");
 
 const GECKO = { id: "dictionary-lookup@local", strict_min_version: "127.0" };
-const SHIPPED = ["background.js", "content.js", "card.js", "config.json", "lib", "icons", "README.md"];
+const SHIPPED = ["background.js", "content.js", "card.js", "saved.html", "saved.css", "saved.js", "config.json", "lib", "icons", "README.md"];
 
 const clone = (o) => JSON.parse(JSON.stringify(o));
 

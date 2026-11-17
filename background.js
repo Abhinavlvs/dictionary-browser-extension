@@ -1,9 +1,11 @@
 if (typeof importScripts === "function") {
-  importScripts("lib/parse.js", "lib/words.js", "lib/config.js", "lib/sites.js", "lib/serial.js", "lib/lookup.js");
+  importScripts("lib/parse.js", "lib/words.js", "lib/config.js", "lib/sites.js", "lib/serial.js", "lib/lookup.js", "lib/saved.js");
 }
 
 const api = globalThis.browser ?? globalThis.chrome;
 const MENU_ID = "mw-search";
+const SAVED_MENU_ID = "open-saved-words";
+const SAVED_KEY = "savedWords"; // { word: entry } see lib/saved.js
 const runExclusive = DictExt.createSerialQueue(); // serialises storage read-modify-write
 const OVERRIDES_KEY = "siteOverrides"; // { host: boolean } set by the toolbar toggle
 
@@ -29,10 +31,17 @@ async function buildMenu() {
   await api.contextMenus.removeAll();
   if (!cfg.contextMenu.enabled) return;
   api.contextMenus.create({ id: MENU_ID, title: cfg.contextMenu.title, contexts: ["selection"] });
+  if (cfg.popup.saveWords) {
+    api.contextMenus.create({ id: SAVED_MENU_ID, title: "Open saved words", contexts: ["page", "selection"] });
+  }
 }
 buildMenu();
 
 api.contextMenus.onClicked.addListener(async (info) => {
+  if (info.menuItemId === SAVED_MENU_ID) {
+    api.tabs.create({ url: api.runtime.getURL("saved.html") });
+    return;
+  }
   if (info.menuItemId !== MENU_ID) return;
   const text = (info.selectionText || "").trim();
   if (!text) return;
@@ -83,7 +92,20 @@ async function handleLookup(rawWord) {
   const cfg = await configPromise;
   const word = DictExt.normalizeWord(rawWord, cfg.popup.maxWordLength);
   if (!word) return { ok: false, error: "invalid word" };
-  return (await lookupPromise)(word);
+  const result = await (await lookupPromise)(word);
+  if (result.ok && cfg.popup.saveWords) saveWord(result.data, cfg.popup.maxSavedWords).catch((e) => console.warn("Dictionary Lookup: could not save word", e));
+  return result;
+}
+
+// Only words that have a definition are saved. Serialised with the same queue as other storage writes.
+async function saveWord(data, max) {
+  const [first] = DictExt.flattenDefinitions(data, 1);
+  if (!first) return;
+  await runExclusive(async () => {
+    const r = await api.storage.local.get(SAVED_KEY);
+    const next = DictExt.recordWord(r[SAVED_KEY], { word: data.word, ...first }, Date.now(), max);
+    await api.storage.local.set({ [SAVED_KEY]: next });
+  });
 }
 
 // The background is the trust boundary: only this extension's own scripts may talk to it,

@@ -1,0 +1,17 @@
+:root { color-scheme: light dark; --fg:#1a1a1a; --bg:#fff; --muted:#666; --line:#ddd; --accent:#1a56b0; --danger:#b3261e; }
+@media (prefers-color-scheme: dark) { :root { --fg:#eee; --bg:#1e1e1e; --muted:#aaa; --line:#444; --accent:#8ab4f8; --danger:#f2b8b5; } }
+body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+main { max-width: 760px; margin: 0 auto; padding: 24px 16px 48px; }
+h1 { margin: 0 0 4px; font-size: 22px; }
+.muted { color: var(--muted); font-size: 13px; }
+.bar { display: flex; gap: 8px; margin: 16px 0; flex-wrap: wrap; }
+input[type=search] { flex: 1 1 220px; padding: 6px 10px; font: inherit; color: inherit; background: transparent; border: 1px solid var(--line); border-radius: 6px; }
+button { font: inherit; font-size: 13px; padding: 6px 12px; color: var(--accent); background: transparent; border: 1px solid var(--line); border-radius: 6px; cursor: pointer; }
+button:hover { border-color: var(--accent); }
+button.danger { color: var(--danger); }
+ul { list-style: none; margin: 0; padding: 0; }
+li { display: flex; gap: 12px; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--line); }
+.word { font-weight: 600; font-size: 17px; }
+.pos { color: var(--accent); font-style: italic; font-size: 12px; margin-left: 6px; }
+.meta { color: var(--muted); font-size: 12px; margin-top: 2px; }
+li button { align-self: flex-start; flex: none; }

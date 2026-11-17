@@ -10,6 +10,7 @@ Dictionary Lookup does not collect, store on a server, sell or share personal da
 - "Search in Merriam-Webster" opens a Merriam-Webster page for the text you chose in the context menu, only when you click it. Merriam-Webster then sees your request under its own policy.
 
 ## What is stored on your device
+- Words you looked up that have a definition, with the first definition, a lookup count and timestamps (`storage.local`, never sent anywhere). Turn this off with `popup.saveWords`, or delete it from the Saved words page (right-click, "Open saved words"). At most `popup.maxSavedWords` (default 5000) are kept.
 - Your per-site on/off choices (site host names) in the browser's extension storage (`storage.local`).
 - A short-lived in-memory cache of recently looked-up definitions, discarded when the browser stops the extension's background process.
 - The extension's own `config.json`, which ships with the extension.
@@ -17,7 +18,7 @@ Dictionary Lookup does not collect, store on a server, sell or share personal da
 ## Permissions and why
 - Access to all websites: to show the definition card where you select a word.
 - `contextMenu`: the "Search in Merriam-Webster" item.
-- `storage`: your per-site toggles.
+- `storage`: your per-site toggles and saved words.
 - Host access to `freedictionaryapi.com`: to fetch definitions.
 
 ## Changes and contact

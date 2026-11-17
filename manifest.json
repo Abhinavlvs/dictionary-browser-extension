@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Dictionary Lookup",
-  "version": "0.1.1",
+  "version": "0.2.0",
   "description": "Select an English word to see its meaning. Right-click to search Merriam-Webster.",
   "permissions": [
     "contextMenus",

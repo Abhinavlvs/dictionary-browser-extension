@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Saved words - Dictionary Lookup</title>
+  <link rel="stylesheet" href="saved.css">
+</head>
+<body>
+  <main>
+    <h1>Saved words</h1>
+    <p class="muted" id="summary"></p>
+    <div class="bar">
+      <input id="search" type="search" placeholder="Search words and definitions" aria-label="Search saved words">
+      <button id="export" type="button">Export CSV</button>
+      <button id="clear" type="button" class="danger">Clear all</button>
+    </div>
+    <ul id="list"></ul>
+    <p id="empty" class="muted" hidden>No saved words yet. Look up a word and it appears here.</p>
+  </main>
+  <script src="lib/saved.js"></script>
+  <script src="saved.js"></script>
+</body>
+</html>

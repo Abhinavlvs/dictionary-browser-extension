@@ -4,7 +4,7 @@
 
 **Jump to:** [Install in Chrome](#chrome) · [Install in Firefox](#firefox) · [Configure](#configure) · [Privacy](#privacy-and-security)
 
-Select an English word on any page to see up to 5 definitions. Right-click a selection (word or phrase) and choose "Search in Merriam-Webster" to open it in a new tab.
+Select an English word on any page to see up to 5 definitions (a button shows or hides examples), and keep a searchable history of the words you looked up. Right-click a selection (word or phrase) and choose "Search in Merriam-Webster" to open it in a new tab.
 
 Definitions: https://freedictionaryapi.com (Wiktionary, CC BY-SA 4.0).
 
@@ -60,6 +60,7 @@ Double-click a word on any normal web page, such as a Wikipedia article. A card 
 
 ## Privacy and security
 - Only a single word you select with the mouse is sent, to `dictionary.apiUrlTemplate` (default freedictionaryapi.com), with no cookies and no referrer. Text selected inside inputs, textareas and editors is never sent. Phrases are never sent anywhere automatically; the right-click search only opens a page when you pick it.
+- Looked-up words are saved locally for the Saved words page; turn off with `popup.saveWords`.
 - Disable the popup per site with the toolbar button, or turn it off entirely with `popup.enabled`.
 - URL templates in `config.json` must be `https://`; anything else is ignored.
 - Synthetic events from web pages are ignored, and the card lives in a closed shadow root.
@@ -80,11 +81,16 @@ Edit `config.json`, then click **Reload** on the extension (browsers cannot re-r
 | `popup.width` | 320 | pixels |
 | `popup.theme` | "auto" | "light" or "dark" |
 | `popup.disabledHosts` | [] | sites where the popup starts disabled, e.g. `["mail.google.com"]` |
+| `popup.saveWords` | true | save looked-up words (see Saved words); false stops saving |
+| `popup.maxSavedWords` | 5000 | oldest are dropped beyond this |
 | `contextMenu.enabled` | true | |
 | `contextMenu.title` | "Search in Merriam-Webster" | |
 | `contextMenu.urlTemplate` | MW URL | must contain `{query}` (URL-encoded on use) |
 | `dictionary.apiUrlTemplate` | freedictionaryapi URL | must contain `{word}` |
 | `dictionary.timeoutMs` | 8000 | |
+
+## Saved words
+Every word that returns a definition is saved on your device (browser extension storage, never sent anywhere) with its first definition, how many times you looked it up, and first and last lookup times. Right-click anywhere on a page and choose **Open saved words** to search, delete single words, clear the list, or **Export CSV**. Set `popup.saveWords` to `false` to stop saving. Words are not saved on sites where the popup is turned off, because no lookup happens there.
 
 ## Turn it off or on for one site
 Click the extension's toolbar button while on a page: it toggles the popup for that whole site (hostname). The badge shows `OFF` while disabled; click again to re-enable. The choice is remembered by the browser and beats `popup.disabledHosts`. Right-click search keeps working on disabled sites. The button does nothing on pages where the extension cannot run.

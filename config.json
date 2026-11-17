@@ -9,7 +9,9 @@
     "maxWordLength": 45,
     "width": 320,
     "theme": "auto",
-    "disabledHosts": []
+    "disabledHosts": [],
+    "saveWords": true,
+    "maxSavedWords": 5000
   },
   "contextMenu": {
     "enabled": true,

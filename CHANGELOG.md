@@ -5,6 +5,13 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ## [Unreleased]
 
+## [0.2.1] - 2026-11-19
+
+### Changed
+- Firefox add-on ID is now `dictionary-lookup@abhinavlvs.github.io` (needed for signing). Firefox treats this as a new add-on: export your saved words first (Saved words page, "Export file") and import them afterwards.
+- Firefox manifest declares `data_collection_permissions` (website content: the selected word is sent to the dictionary API), as addons.mozilla.org requires.
+- Saved words page credits Icons8 with a link.
+
 ## [0.2.0] - 2026-11-17
 
 ### Added

@@ -30,8 +30,9 @@ test("firefox manifest: scripts = importScripts list + background.js, no service
   const { firefox } = deriveManifests(base, bgSource);
   assert.strictEqual(firefox.background.service_worker, undefined);
   assert.deepStrictEqual(firefox.background.scripts, [...importedScripts(bgSource), "background.js"]);
-  assert.strictEqual(firefox.browser_specific_settings.gecko.id, "dictionary-lookup@local");
+  assert.strictEqual(firefox.browser_specific_settings.gecko.id, "dictionary-lookup@abhinavlvs.github.io");
   assert.strictEqual(firefox.browser_specific_settings.gecko.strict_min_version, "127.0");
+  assert.deepStrictEqual(firefox.browser_specific_settings.gecko.data_collection_permissions, { required: ["websiteContent"] });
 });
 
 test("deriveManifests does not mutate its input", () => {

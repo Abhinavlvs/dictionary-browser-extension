@@ -4,7 +4,13 @@ const fs = require("node:fs");
 const path = require("node:path");
 const { execFileSync } = require("node:child_process");
 
-const GECKO = { id: "dictionary-lookup@local", strict_min_version: "127.0" };
+// AMO requires data_collection_permissions. The one word you select is sent to the dictionary API
+// (a third party), so "none" would be untrue; it counts as website content, shown at install.
+const GECKO = {
+  id: "dictionary-lookup@abhinavlvs.github.io",
+  strict_min_version: "127.0",
+  data_collection_permissions: { required: ["websiteContent"] },
+};
 const SHIPPED = ["background.js", "content.js", "card.js", "saved.html", "saved.css", "saved.js", "popup.html", "popup.js", "config.json", "lib", "icons", "README.md"];
 
 const clone = (o) => JSON.parse(JSON.stringify(o));

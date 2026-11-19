@@ -7,5 +7,5 @@
 
 ## Store publishing (manual, not automated)
 - **Chrome Web Store:** upload the `-chrome.zip` in the developer dashboard (one-time registration fee). A privacy policy URL is required: use `PRIVACY.md`.
-- **Firefox (addons.mozilla.org):** upload the `-firefox.xpi`. Choose "On your own" for a signed self-distributed `.xpi`, or list it publicly. Change the add-on id in `scripts/build.js` (`dictionary-lookup@local`) to one you own before the first public submission.
+- **Firefox (addons.mozilla.org):** upload the `-firefox.xpi`. Choose "On your own" for a signed self-distributed `.xpi`, or list it publicly. The add-on id is set in `scripts/build.js` (`dictionary-lookup@abhinavlvs.github.io`); do not change it after the first signing, because Firefox treats a new id as a different add-on.
 - Automating store uploads needs API credentials stored as repository secrets (Chrome Web Store API, AMO JWT issuer/secret). Add them only when you decide to publish publicly.

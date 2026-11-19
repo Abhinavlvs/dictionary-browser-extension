@@ -14,6 +14,12 @@ Definitions: https://freedictionaryapi.com (Wiktionary, CC BY-SA 4.0).
 
 <sub>Screenshot of the Wikipedia article ["Novel"](https://en.wikipedia.org/wiki/Novel), text available under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).</sub>
 
+**Right-click a word or phrase to search Merriam-Webster:**
+
+![Right-click menu showing Search in Merriam-Webster on a Wikipedia article](docs/images/screenshot-contextmenu.png)
+
+<sub>Screenshot of the Wikipedia article ["Roanoke"](https://en.wikipedia.org/wiki/Roanoke_Colony), text available under [CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/).</sub>
+
 ## Installation
 Requirements: Chrome (or another Chromium browser), or Firefox 127+; Node.js 18+ and the `zip` command to build.
 
